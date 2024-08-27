@@ -1,8 +1,7 @@
 #!/bin/bash
 #
-# Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017-2020 The LineageOS Project
-#
+# SPDX-FileCopyrightText: 2016 The CyanogenMod Project
+# SPDX-FileCopyrightText: 2017-2024 The LineageOS Project
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -33,18 +32,18 @@ SECTION=
 while [ "${#}" -gt 0 ]; do
     case "${1}" in
         -n | --no-cleanup )
-                CLEAN_VENDOR=false
-                ;;
+            CLEAN_VENDOR=false
+            ;;
         -k | --kang )
-                KANG="--kang"
-                ;;
+            KANG="--kang"
+            ;;
         -s | --section )
-                SECTION="${2}"; shift
-                CLEAN_VENDOR=false
-                ;;
+            SECTION="${2}"; shift
+            CLEAN_VENDOR=false
+            ;;
         * )
-                SRC="${1}"
-                ;;
+            SRC="${1}"
+            ;;
     esac
     shift
 done
@@ -56,9 +55,11 @@ fi
 function blob_fixup() {
     case "${1}" in
         system/lib64/libcamera_algoup_jni.xiaomi.so|system/lib64/libcamera_mianode_jni.xiaomi.so)
-            patchelf --add-needed "libgui_shim_miuicamera.so" "${2}"
+            [ "$2" = "" ] && return 0
+            "${PATCHELF}" --add-needed "libgui_shim_miuicamera.so" "${2}"
             ;;
         system/priv-app/MiuiCamera/MiuiCamera.apk)
+            [ "$2" = "" ] && return 0
             tmp_dir="${EXTRACT_TMP_DIR}/MiuiCamera"
             apktool d -q "$2" -o "$tmp_dir" -f
             grep -rl "com.miui.gallery" "$tmp_dir" | xargs sed -i 's|"com.miui.gallery"|"com.google.android.apps.photos"|g'
@@ -66,7 +67,16 @@ function blob_fixup() {
             rm -rf "$tmp_dir"
             split --bytes=20M -d "$2" "$2".part
             ;;
+        *)
+            return 1
+            ;;
     esac
+
+    return 0
+}
+
+function blob_fixup_dry() {
+    blob_fixup "$1" ""
 }
 
 # Initialize the helper
