@@ -19,7 +19,8 @@ PRODUCT_SYSTEM_PROPERTIES += \
     persist.vendor.camera.privapp.list=org.codeaurora.snapcam,com.android.camera \
     ro.com.google.lens.oem_camera_package=com.android.camera \
     ro.miui.notch=1 \
-    vendor.camera.aux.packagelist=org.codeaurora.snapcam,com.android.camera,org.lineageos.aperture,org.lineageos.aperture.dev
+    vendor.camera.aux.packagelist=org.codeaurora.snapcam,com.android.camera,org.lineageos.aperture,org.lineageos.aperture.dev \
+    persist.sys.cam.skip_detach_image=true
 
 # Sepolicy
 BOARD_VENDOR_SEPOLICY_DIRS += \
