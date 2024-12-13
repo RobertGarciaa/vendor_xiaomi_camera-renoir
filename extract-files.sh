@@ -70,6 +70,7 @@ function blob_fixup() {
         system/lib64/libgui-xiaomi.so)
             [ "$2" = "" ] && return 0
             "${PATCHELF}" --replace-needed "android.hardware.graphics.common-V4-ndk.so" "android.hardware.graphics.common-V5-ndk.so" "${2}"
+            "${PATCHELF}" --add-needed "libbinder_shim.so" "${2}"
             ;;
         *)
             return 1
